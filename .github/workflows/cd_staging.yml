@@ -13,4 +13,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" &> /home/runner/.ssh/ssh_key.pem
           chmod 600 /home/runner/.ssh/ssh_key.pem
           ls -la /home/runner/.ssh
-          ssh -i /home/runner/.ssh/ssh_key.pem -o StrictHostKeyChecking=no  ubuntu@54.166.254.255 -t "cd Nextjs-http-ws-CICD/ && git pull origin main && export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart fe-server && pm2 restart http-server && pm2 restart ws-server"
+          touch /home/runner/.ssh/known_hosts
+          echo "${{ secrets.KNOWN_HOSTS }}" &> /home/runner/.ssh/known_hosts
+          ssh -i /home/runner/.ssh/ssh_key.pem  ubuntu@54.166.254.255 -t "cd Nextjs-http-ws-CICD/ && git pull origin main && export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart fe-server && pm2 restart http-server && pm2 restart ws-server"
