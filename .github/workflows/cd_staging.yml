@@ -1,0 +1,15 @@
+name: Deploy to staging
+on:
+  push:
+    branches: [main]
+
+jobs:
+  redeploy_everything:
+    runs-on: ubuntu-latest
+    name: Deploying everything to the staging cluster
+    steps:
+      - run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
+          mkdir -p /home/runner/.ssh
+          chmod 700 /home/runner/ssh_key
+          ssh -o StrictHostKeyChecking=no -i ~/ssh_key root@54.166.254.255 -t "cd Nextjs-http-ws-CICD/ && git pull origin main && export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart fe-server && pm2 restart http-server && pm2 restart ws-server"
